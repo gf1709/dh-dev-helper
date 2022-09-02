@@ -19,7 +19,7 @@ import java.awt.Color;
 public class FrmMain extends JFrame {
 
 	/**
-	 * 
+	 * GF done
 	 */
 	private static final long serialVersionUID = 3008084308925140252L;
 	private JPanel contentPane;
