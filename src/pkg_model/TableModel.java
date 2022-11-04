@@ -901,9 +901,10 @@ public class TableModel {
 
 		sql += String.format("   PROCEDURE DTO_FTNSR001_%s_ON_RECEIVED    (aREMOTE_FILE_NAME IN VARCHAR2)" + Util.newLine, t.getDTOName());
 		sql += String.format("    IS" + Util.newLine);
-		sql += String.format("    -- La procedura consente viene eseguita al termine dell'importazione dalla DTO del flusso" + Util.newLine);
+		sql += String.format("    v_pkg_proc VARCHAR2(32767) default $$PLSQL_UNIT || '.' || UTL_CALL_STACK.SUBPROGRAM(1)(2);"+ Util.newLine);
+		sql += String.format("    -- La procedura viene eseguita al termine dell'importazione dalla DTO del flusso" + Util.newLine);
 		sql += String.format("    BEGIN" + Util.newLine);
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO ('Ricezione del flusso %s...', aREMOTE_FILE_NAME) ;" + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Ricezione del flusso %s... --> ' || aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
 		sql += String.format("        DBMS_OUTPUT.PUT_LINE('Received from DTO File Name :' || aREMOTE_FILE_NAME);" + Util.newLine);
 		sql += String
 				.format("        -- Cancello tutti i record ricevuti in precedenza a fronte dello stesso ABI_BANCA,DATA_RIFERIMENTO ma con aREMOTE_FILE_NAME DIVERSO da quello che ho appena ricevuto." + Util.newLine);
@@ -916,14 +917,14 @@ public class TableModel {
 		sql += String.format("        -- UPDATE_SERVIZIO_RAPPORTO('DTO_FTNSR001_%s', aREMOTE_FILE_NAME);  --- Se serve aggiornare il servizio !!! " + Util.newLine + Util.newLine, t.getDTOName());
 
 		sql += String.format("        -- Aggiorno lo status per rendere visibili i record nella vista" + Util.newLine);
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO ('Aggiornamento dello stato a PUBLISHED per il flusso %s...', aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s... --> ' || aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
 		sql += String.format("        UPDATE S2A.DTO_FTNSR001_%s SET STATUS='PUBLISHED' WHERE STATUS='RECEIVED' AND REMOTE_FILE_NAME=aREMOTE_FILE_NAME;" + Util.newLine, t.getDTOName());
 		sql += String.format("        COMMIT;" + Util.newLine);
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO ('Aggiornamento dello stato a PUBLISHED per il flusso %s OK', aREMOTE_FILE_NAME);" + Util.newLine + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s OK --> ' || aREMOTE_FILE_NAME);" + Util.newLine + Util.newLine, t.getDTOName());
 
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO ('Ricezione del flusso %s OK', aREMOTE_FILE_NAME) ;" + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Ricezione del flusso %s OK --> ' || aREMOTE_FILE_NAME) ;" + Util.newLine, t.getDTOName());
 		sql += String.format("        EXCEPTION WHEN OTHERS THEN" + Util.newLine);
-		sql += String.format("            S2A.LOG_MANAGER.LOG_ERROR ('Ricezione del flusso %s KO', aREMOTE_FILE_NAME) ;" + Util.newLine, t.getDTOName());
+		sql += String.format("            S2A.LOG_MANAGER.LOG_ERROR (v_pkg_proc,'Ricezione del flusso %s KO --> ' || aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
 		sql += String.format("            RAISE;" + Util.newLine + Util.newLine);
 		sql += String.format("    END DTO_FTNSR001_%s_ON_RECEIVED;" + Util.newLine + Util.newLine, t.getDTOName());
 
