@@ -213,7 +213,7 @@ public class TableModel {
 		try {
 			OracleConnection conn = OracleConnectionFactory.getConnection();
 			Statement stmt = conn.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT NAME FROM \"_DEV_TAB_DEFS\" ORDER BY NAME");
+			ResultSet rset = stmt.executeQuery("SELECT NAME FROM S2ABASE.\"_DEV_TAB_DEFS\" ORDER BY NAME");
 
 			while (rset.next()) {
 				String t = rset.getString(1);
@@ -238,7 +238,7 @@ public class TableModel {
 			OracleConnection conn = OracleConnectionFactory.getConnection();
 			Statement stmt = conn.createStatement();
 			String sql = String.format(
-					"SELECT A.NAME, A.DES, A.VIEW_TYPE, A.VIEW_NAME, A.FREQUENZA, B.NAME, B.DES, B.ISKEY, B.IS_SA, B.NAME_S2A, B.TYPE,B.LEN, B.SCALE, B.NRO FROM \"_DEV_TAB_DEFS\" A, \"_DEV_FLD_DEFS\" B WHERE A.NAME = B.TABLE_NAME AND A.NAME = '%s' ORDER BY B.NRO",
+					"SELECT A.NAME, A.DES, A.VIEW_TYPE, A.VIEW_NAME, A.FREQUENZA, B.NAME, B.DES, B.ISKEY, B.IS_SA, B.NAME_S2A, B.TYPE,B.LEN, B.SCALE, B.NRO FROM S2ABASE.\"_DEV_TAB_DEFS\" A, S2ABASE.\"_DEV_FLD_DEFS\" B WHERE A.NAME = B.TABLE_NAME AND A.NAME = '%s' ORDER BY B.NRO",
 					aTableName);
 
 			ResultSet rset = stmt.executeQuery(sql);
