@@ -329,7 +329,8 @@ public class TableModel {
 		else
 			sql += Util.newLine + String.format("   , ANNO DATE GENERATED ALWAYS AS (TRUNC(%s,'YYYY')) VIRTUAL", t.Field_DTV().getName());
 
-		sql += Util.newLine + String.format("   , CONSTRAINT %-20s  FOREIGN KEY(%s) REFERENCES \"ACT_ABI\"(\"CODICE_ABI\")", t.getName() + "_ACT_ABI_FK", t.Field_ABI().NameQuoted());
+		// 27.12.2022 - Eliminata la creazione della constraint
+		//sql += Util.newLine + String.format("   , CONSTRAINT %-20s  FOREIGN KEY(%s) REFERENCES \"ACT_ABI\"(\"CODICE_ABI\")", t.getName() + "_ACT_ABI_FK", t.Field_ABI().NameQuoted());
 		sql += Util.newLine + ") ";
 		sql += Util.newLine + " SEGMENT CREATION DEFERRED ROW STORE COMPRESS ADVANCED";
 		if (isPartizionamentoPerMESE)
