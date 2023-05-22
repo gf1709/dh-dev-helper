@@ -120,10 +120,10 @@ public class FrmMain extends JFrame {
 		btnCreaRebuilProc.setBounds(10, 74, 120, 23);
 		panel.add(btnCreaRebuilProc);
 		btnCreaRebuilProc.setFont(DEFAULT_FONT());
-		
+
 		JButton btnCreaRebuilProcV2 = new JButton("Rebuild V2");
 		btnCreaRebuilProcV2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				String sql = "working...";
 				_rtSql.setText(sql);
 				try {
@@ -133,7 +133,7 @@ public class FrmMain extends JFrame {
 				}
 				_rtSql.setText(sql);
 				_rtSql.setCaretPosition(0);
-				
+
 			}
 		});
 		btnCreaRebuilProcV2.setFont(new Font("Tahoma", Font.PLAIN, 11));
