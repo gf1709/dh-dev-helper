@@ -126,7 +126,7 @@ public class FieldModel {
 
 	public String OraFieldDefinitionNullable() throws Exception {
 		String ret;
-		ret = String.format("%-15s %-20s", NameQuoted(), OracleType());
+		ret = String.format("%-15s %-20s NOT NULL ENABLE", NameQuoted(), OracleType());
 		return ret;
 	}
 

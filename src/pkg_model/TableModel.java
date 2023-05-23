@@ -302,7 +302,7 @@ public class TableModel {
 		return t;
 	}
 
-	public static String CreatabellaODS(String aTableName, Boolean isPartizionamentoPerMeseParam, Boolean createALLView) throws Exception {
+	public static String creaTabellaODS(String aTableName, Boolean isPartizionamentoPerMeseParam, Boolean createALLView) throws Exception {
 		Boolean isPartizionamentoPerMESE = isPartizionamentoPerMeseParam;
 		String tName = aTableName;
 		pkg_model.TableModel t = pkg_model.TableModel.GetTable(tName, isPartizionamentoPerMESE);

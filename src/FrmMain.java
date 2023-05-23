@@ -198,7 +198,7 @@ public class FrmMain extends JFrame {
 				_rtSql.getRootPane().updateUI();
 				try {
 					String aTableName = (String) _cmbTables.getSelectedItem();
-					sql = pkg_model.TableModel.CreatabellaODS(aTableName, isPartizionamentoPerMESE, createALLView);
+					sql = pkg_model.TableModel.creaTabellaODS(aTableName, isPartizionamentoPerMESE, createALLView);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

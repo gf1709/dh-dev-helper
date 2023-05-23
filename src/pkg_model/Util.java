@@ -69,7 +69,7 @@ public class Util {
 		if (name.endsWith("_ALL"))
 		{
 			sql += "-- DWHEVO : Utente per DWHEVO \n";
-			sql += String.format("GRANT SELECT ON S2A.%s TO DWHEVO WITH GRANT OPTION;" + newLine, name);			
+			sql += String.format("GRANT SELECT ON S2A.%s TO DWHEVO;" + newLine, name);			
 		}
 		return sql;
 	}
