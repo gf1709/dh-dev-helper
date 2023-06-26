@@ -66,11 +66,15 @@ public class Util {
 		sql += "-- DATALAYER: Utente per DATALAYER \n";
 		sql += String.format("GRANT SELECT ON S2A.%s TO DATALAYER WITH GRANT OPTION;" + newLine, name);
 		
-		if (name.endsWith("_ALL"))
-		{
-			sql += "-- DWHEVO : Utente per DWHEVO \n";
-			sql += String.format("GRANT SELECT ON S2A.%s TO DWHEVO;" + newLine, name);			
-		}
+//		if (name.endsWith("_ALL"))
+//		{
+		sql += "-- DWHEVO : Utente per DWHEVO \n";
+		sql += String.format("GRANT SELECT ON S2A.%s TO DWHEVO WITH GRANT OPTION;" + newLine, name);			
+//		}
+
+		sql += "-- DWHEVO : Utente per S2A_EDQ_AP \n";
+		sql += String.format("GRANT SELECT ON S2A.%s TO S2A_EDQ_AP;" + newLine, name);			
+		
 		return sql;
 	}
 
