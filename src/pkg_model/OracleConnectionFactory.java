@@ -10,8 +10,8 @@ public class OracleConnectionFactory {
 
 //	private final static String DB_URL = "jdbc:oracle:thin:/@SRVTS2A_S2A_APP";
 //	private final static String DB_PROXY_USER = "S2A";
-//	private final static String WALLET_LOCATION = "C:\\Users\\fce458\\Documents\\Apps\\oracle\\OracleDeveloper\\instantclient\\network\\admin";
-//	private final static String TNS_ADMIN_LOCATION = "C:\\Users\\fce458\\Documents\\Apps\\oracle\\OracleDeveloper\\instantclient\\network\\admin";
+//	private final static String WALLET_LOCATION = "C:\\Users\\fc0382\\Documents\\Apps\\oracle\\OracleDeveloper\\instantclient\\network\\admin";
+//	private final static String TNS_ADMIN_LOCATION = "C:\\Users\\fc0382\\Documents\\Apps\\oracle\\OracleDeveloper\\instantclient\\network\\admin";
 
 	public static OracleConnection getConnection() {
 

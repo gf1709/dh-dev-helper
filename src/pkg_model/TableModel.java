@@ -245,14 +245,14 @@ public class TableModel {
 
 			while (rset.next()) {
 				t.setName(rset.getString(1).trim().toUpperCase());
-				t.setDescription(rset.getString(2).trim().replace('à', 'a'));
+				t.setDescription(rset.getString(2).trim().replace('ï¿½', 'a'));
 				t.setViewType(rset.getString(3).trim().toUpperCase());
 				t.setViewName(rset.getString(4).trim().toUpperCase());
 				t.setFrequenza(rset.getString(5).trim().toUpperCase());
 
 				FieldModel fld = new FieldModel();
 				fld.setName(rset.getString(6).toUpperCase().trim());
-				fld.setDescription(rset.getString(7).trim().replace('à', 'a'));
+				fld.setDescription(rset.getString(7).trim().replace('ï¿½', 'a'));
 
 				String tmpString = rset.getString(8);
 				if (!rset.wasNull() && tmpString.toUpperCase().trim().equals("K"))
@@ -324,6 +324,7 @@ public class TableModel {
 			}
 		}
 		sql += Util.newLine + "   , DATA_INSERIMENTO TIMESTAMP(6) DEFAULT SYSTIMESTAMP";
+		sql += Util.newLine + "   , DATA_AGGIORNAMENTO_TECNICO TIMESTAMP(6) DEFAULT SYSTIMESTAMP";
 		if (isPartizionamentoPerMESE)
 			sql += Util.newLine + String.format("   , MESE DATE GENERATED ALWAYS AS (TRUNC(%s,'FMMM')) VIRTUAL", t.Field_DTV().getName());
 		else
@@ -405,7 +406,7 @@ public class TableModel {
 				sql += Util.newLine + "=====================================";
 				sql += Util.newLine + "=====================================";
 				sql += Util.newLine;
-				sql += Util.newLine + " TODO GREG: è una vista complessa: da fare a mano";
+				sql += Util.newLine + " TODO GREG: ï¿½ una vista complessa: da fare a mano";
 				sql += Util.newLine;
 				sql += Util.newLine;
 				sql += Util.newLine + "=====================================";
