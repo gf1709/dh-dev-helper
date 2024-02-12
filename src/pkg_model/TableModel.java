@@ -324,7 +324,7 @@ public class TableModel {
 			}
 		}
 		sql += Util.newLine + "   , DATA_INSERIMENTO TIMESTAMP(6) DEFAULT SYSTIMESTAMP";
-		sql += Util.newLine + "   , DATA_AGGIORNAMENTO_TECNICO TIMESTAMP(6) DEFAULT SYSTIMESTAMP";
+		sql += Util.newLine + "   , DATA_AGGIORNAMENTO_TECNICO TIMESTAMP(6)";
 		if (isPartizionamentoPerMESE)
 			sql += Util.newLine + String.format("   , MESE DATE GENERATED ALWAYS AS (TRUNC(%s,'FMMM')) VIRTUAL", t.Field_DTV().getName());
 		else
