@@ -60,7 +60,7 @@ public class Util {
 		sql += "-- S2A_READ_ROLE: Utente EUS (dominio FCDB)\n";
 		sql += String.format("GRANT SELECT ON S2A.%s TO S2A_READ_ROLE;" + newLine, name);
 		sql += "-- EDCDISCOVERY: Utente EDC discovery per EDQ \n";
-		sql += String.format("GRANT SELECT ON S2A.%s TO EDCDISCOVERY;" + newLine, name);
+		sql += String.format("GRANT SELECT ON S2A.%s TO EDCDISCOVERY_AP;" + newLine, name);
 		sql += "-- S2A_ERMAS_AP: Utente per ERMAS \n";
 		sql += String.format("GRANT SELECT ON S2A.%s TO S2A_ERMAS_AP;" + newLine, name);
 		sql += "-- DATALAYER: Utente per DATALAYER \n";

@@ -245,14 +245,14 @@ public class TableModel {
 
 			while (rset.next()) {
 				t.setName(rset.getString(1).trim().toUpperCase());
-				t.setDescription(rset.getString(2).trim().replace('�', 'a'));
+				t.setDescription(rset.getString(2).trim().replace('à', 'a'));
 				t.setViewType(rset.getString(3).trim().toUpperCase());
 				t.setViewName(rset.getString(4).trim().toUpperCase());
 				t.setFrequenza(rset.getString(5).trim().toUpperCase());
 
 				FieldModel fld = new FieldModel();
 				fld.setName(rset.getString(6).toUpperCase().trim());
-				fld.setDescription(rset.getString(7).trim().replace('�', 'a'));
+				fld.setDescription(rset.getString(7).trim().replace('à', 'a'));
 
 				String tmpString = rset.getString(8);
 				if (!rset.wasNull() && tmpString.toUpperCase().trim().equals("K"))
