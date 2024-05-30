@@ -75,6 +75,9 @@ public class Util {
 		sql += "-- DWHEVO : Utente per S2A_EDQ_AP \n";
 		sql += String.format("GRANT SELECT ON S2A.%s TO S2A_EDQ_AP;" + newLine, name);			
 		
+		sql += "-- DATAMARTGOV_AP : Utente per DATAMARTGOV_AP \n";
+		sql += String.format("GRANT SELECT ON S2A.%s TO DATAMARTGOV_AP;" + newLine, name);			
+		
 		return sql;
 	}
 

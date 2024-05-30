@@ -331,7 +331,8 @@ public class TableModel {
 			sql += Util.newLine + String.format("   , ANNO DATE GENERATED ALWAYS AS (TRUNC(%s,'YYYY')) VIRTUAL", t.Field_DTV().getName());
 
 		// 27.12.2022 - Eliminata la creazione della constraint
-		//sql += Util.newLine + String.format("   , CONSTRAINT %-20s  FOREIGN KEY(%s) REFERENCES \"ACT_ABI\"(\"CODICE_ABI\")", t.getName() + "_ACT_ABI_FK", t.Field_ABI().NameQuoted());
+		// sql += Util.newLine + String.format(" , CONSTRAINT %-20s FOREIGN KEY(%s) REFERENCES \"ACT_ABI\"(\"CODICE_ABI\")", t.getName() + "_ACT_ABI_FK",
+		// t.Field_ABI().NameQuoted());
 		sql += Util.newLine + ") ";
 		sql += Util.newLine + " SEGMENT CREATION DEFERRED ROW STORE COMPRESS ADVANCED";
 		if (isPartizionamentoPerMESE)
@@ -346,9 +347,10 @@ public class TableModel {
 		sql += String.format(" TABLESPACE %s;", tableSpaceName);
 
 		sql += String.format(Util.newLine + "CREATE UNIQUE INDEX S2A.%s ON %s (%s) COMPRESS ADVANCED HIGH LOCAL", t.PrimaryKeyName(), t.getName(), t.PrimaryKey());
-		sql += String.format(" TABLESPACE %s;", tableSpaceName);
+		sql += String.format(" TABLESPACE %s;", tableSpaceName.replace("DATA", "INDEX"));
 
-		sql += String.format(Util.newLine + "ALTER TABLE S2A.%s ADD CONSTRAINT %s PRIMARY KEY (%s) USING INDEX %s  ENABLE;", t.getName(), t.PrimaryKeyName(), t.PrimaryKey(), t.PrimaryKeyName());
+		sql += String.format(Util.newLine + "ALTER TABLE S2A.%s ADD CONSTRAINT %s PRIMARY KEY (%s) USING INDEX %s  ENABLE;", t.getName(), t.PrimaryKeyName(), t.PrimaryKey(),
+				t.PrimaryKeyName());
 
 		if (t.isGiornaliera()) // Creazione tabella BDT
 		{
@@ -380,8 +382,9 @@ public class TableModel {
 			sql += String.format("(PARTITION \"%s_P1\" VALUES((TO_DATE('01/01/2021', 'DD/MM/YYYY'), '03599')))", bdt.getName());
 			sql += String.format(" TABLESPACE %s;", tableSpaceName);
 			sql += String.format(Util.newLine + "CREATE UNIQUE INDEX S2A.%s ON %s (%s) COMPRESS ADVANCED HIGH LOCAL", bdt.PrimaryKeyName(), bdt.getName(), bdt.PrimaryKey());
-			sql += String.format(" TABLESPACE %s;", tableSpaceName);
-			sql += String.format(Util.newLine + "ALTER TABLE S2A.%s ADD CONSTRAINT %s PRIMARY KEY (%s) USING INDEX %s  ENABLE;", bdt.getName(), bdt.PrimaryKeyName(), bdt.PrimaryKey(), bdt.PrimaryKeyName());
+			sql += String.format(" TABLESPACE %s;", tableSpaceName.replace("DATA", "INDEX"));
+			sql += String.format(Util.newLine + "ALTER TABLE S2A.%s ADD CONSTRAINT %s PRIMARY KEY (%s) USING INDEX %s  ENABLE;", bdt.getName(), bdt.PrimaryKeyName(),
+					bdt.PrimaryKey(), bdt.PrimaryKeyName());
 
 			sql += Util.getTableGrantString(bdt.getName());
 		}
@@ -639,9 +642,9 @@ public class TableModel {
 
 		TableBDTModel bdt = t.getDBTTable(t.getIsPartizionamentoMensile());
 
-		sql += Util.newLine + "------HEADER -->";				
+		sql += Util.newLine + "------HEADER -->";
 		sql += String.format(Util.newLine + "PROCEDURE REBUILD_%s_BDT(anAbi IN VARCHAR2, aDateFrom IN DATE, aDateTo IN DATE, aDeleteExistingRecords IN VARCHAR2);", bdt.getName());
-		
+
 		sql += Util.newLine + "-";
 		sql += Util.newLine + "-";
 		sql += Util.newLine + "------BODY -->";
@@ -650,13 +653,14 @@ public class TableModel {
 		sql += String.format(Util.newLine + "  -- Ricostruzione della tabella %s (%s By Day Table)", bdt.getName(), t.getName());
 		sql += Util.newLine + "------------------------------------------------------------------------------------------";
 
-		sql += String.format(Util.newLine + "PROCEDURE REBUILD_%s_BDT(anAbi IN VARCHAR2, aDateFrom IN DATE, aDateTo IN DATE, aDeleteExistingRecords IN VARCHAR2) ", bdt.getName());		
+		sql += String.format(Util.newLine + "PROCEDURE REBUILD_%s_BDT(anAbi IN VARCHAR2, aDateFrom IN DATE, aDateTo IN DATE, aDeleteExistingRecords IN VARCHAR2) ", bdt.getName());
 		sql += String.format(Util.newLine + "IS");
 		sql += String.format(Util.newLine + "BEGIN");
 		sql += String.format(Util.newLine + "    dbms_output.put_line('todo...');");
 		sql += String.format(Util.newLine + "END;");
 		return sql;
 	}
+
 	public static String CreatabellaDTO(String aTableName, Boolean isPartizionamentoPerMESEParam, boolean aCreateALLView) throws Exception {
 		String tName = aTableName;
 		pkg_model.TableModel t = pkg_model.TableModel.GetTable(tName, false);
@@ -679,10 +683,13 @@ public class TableModel {
 		for (int i = 0; i < t.getFields().size(); i++) {
 			FieldModel f = t.getFields().get(i);
 			if (f.getNameS2A().equals("ABI_BANCA")) {
-				sql += String.format("INSERT INTO S2A.ACT_DTO_FIELDS_CSV VALUES ('FTNSR001-%s','%s' ,'%s','SUBSTR(''000000'' || ''###@@@[FLD_VALUE]@@@###'', -5, 5)', 'N', 'N', 'N');", t.getName(), f.getNameS2A(), i);
+				sql += String.format(
+						"INSERT INTO S2A.ACT_DTO_FIELDS_CSV VALUES ('FTNSR001-%s','%s' ,'%s','SUBSTR(''000000'' || ''###@@@[FLD_VALUE]@@@###'', -5, 5)', 'N', 'N', 'N');",
+						t.getName(), f.getNameS2A(), i);
 				sql += Util.newLine;
 			} else if (f.getType().equals("L")) {
-				sql += String.format("INSERT INTO S2A.ACT_DTO_FIELDS_CSV VALUES ('FTNSR001-%s','%s' ,'%s' ,'TO_DATE(''###@@@[FLD_VALUE]@@@###'', ''YYYY/MM/DD'')', 'N', 'N', 'N');", t.getName(), f.getNameS2A(), i);
+				sql += String.format("INSERT INTO S2A.ACT_DTO_FIELDS_CSV VALUES ('FTNSR001-%s','%s' ,'%s' ,'TO_DATE(''###@@@[FLD_VALUE]@@@###'', ''YYYY/MM/DD'')', 'N', 'N', 'N');",
+						t.getName(), f.getNameS2A(), i);
 				sql += Util.newLine;
 			} else if (f.getType().equals("A")) {
 				sql += String.format("INSERT INTO S2A.ACT_DTO_FIELDS_CSV VALUES ('FTNSR001-%s','%s','%s'  ,NULL, 'S', 'S', 'N');", t.getName(), f.getNameS2A(), i);
@@ -735,20 +742,22 @@ public class TableModel {
 		sql += " ANNO DATE GENERATED ALWAYS AS (TRUNC(DATA_RIFERIMENTO,'YYYY')) VIRTUAL" + Util.newLine;
 		sql += ")" + Util.newLine;
 		sql += "SEGMENT CREATION DEFERRED ROW STORE COMPRESS ADVANCED" + Util.newLine;
-		sql += String.format("PARTITION BY LIST(ANNO, ABI_BANCA) AUTOMATIC (PARTITION DTO_FTNSR001_%s_P1 VALUES((TO_DATE('01/01/2021', 'DD/MM/YYYY'), '03599'))) TABLESPACE %s;" + Util.newLine + Util.newLine,
-				t.getDTOName(), tableSpaceName);
+		sql += String.format("PARTITION BY LIST(ANNO, ABI_BANCA) AUTOMATIC (PARTITION DTO_FTNSR001_%s_P1 VALUES((TO_DATE('01/01/2021', 'DD/MM/YYYY'), '03599'))) TABLESPACE %s;"
+				+ Util.newLine + Util.newLine, t.getDTOName(), tableSpaceName);
 
 		sql += Util.newLine + "--------------------------------------------------------" + Util.newLine;
 		sql += String.format("--DDL for Index DTO_FTNSR001_%s_PK" + Util.newLine, t.getDTOName());
 		sql += "--------------------------------------------------------" + Util.newLine;
 
-		sql += String.format("CREATE UNIQUE INDEX S2A.DTO_FTNSR001_%s_PK ON S2A.DTO_FTNSR001_%s (REMOTE_FILE_NAME, LOCAL_FILE_NAME,ROW_ID,ANNO, ABI_BANCA) LOCAL TABLESPACE %s;" + Util.newLine, t.getDTOName(),
-				t.getDTOName(), tableSpaceName);
 		sql += String.format(
-				"ALTER TABLE S2A.DTO_FTNSR001_%s ADD CONSTRAINT DTO_FTNSR001_%s_PK PRIMARY KEY (REMOTE_FILE_NAME, LOCAL_FILE_NAME, ROW_ID, ANNO, ABI_BANCA) USING INDEX DTO_FTNSR001_%s_PK ENABLE;" + Util.newLine,
+				"CREATE UNIQUE INDEX S2A.DTO_FTNSR001_%s_PK ON S2A.DTO_FTNSR001_%s (REMOTE_FILE_NAME, LOCAL_FILE_NAME,ROW_ID,ANNO, ABI_BANCA) LOCAL TABLESPACE %s;" + Util.newLine,
+				t.getDTOName(), t.getDTOName(), tableSpaceName.replace("DATA", "INDEX"));
+		sql += String.format(
+				"ALTER TABLE S2A.DTO_FTNSR001_%s ADD CONSTRAINT DTO_FTNSR001_%s_PK PRIMARY KEY (REMOTE_FILE_NAME, LOCAL_FILE_NAME, ROW_ID, ANNO, ABI_BANCA) USING INDEX DTO_FTNSR001_%s_PK ENABLE;"
+						+ Util.newLine,
 				t.getDTOName(), t.getDTOName(), t.getDTOName());
-		sql += String.format("CREATE INDEX  S2A.%s_IDX100 ON DTO_FTNSR001_%s (ANNO, DATA_RIFERIMENTO, ABI_BANCA) COMPRESS ADVANCED HIGH LOCAL TABLESPACE %s;" + Util.newLine, t.getDTOName(), t.getDTOName(),
-				tableSpaceName);
+		sql += String.format("CREATE INDEX  S2A.%s_IDX100 ON DTO_FTNSR001_%s (ANNO, DATA_RIFERIMENTO, ABI_BANCA) COMPRESS ADVANCED HIGH LOCAL TABLESPACE %s;" + Util.newLine,
+				t.getDTOName(), t.getDTOName(), tableSpaceName);
 
 		sql += Util.newLine + "--------------------------------------------------------" + Util.newLine;
 		sql += String.format("--Constraints for Table DTO_FTNSR001_%s  " + Util.newLine, t.getDTOName());
@@ -801,8 +810,8 @@ public class TableModel {
 		sql += "   ABI_BANCA" + Util.newLine;
 		sql += " ,DATA_RIFERIMENTO" + Util.newLine;
 		for (FieldModel f : t.Fields_NoABI_NoDTV()) {
-			if (f.getName().equals("REMOTE_FILE_NAME") || f.getName().equals("LOCAL_FILE_NAME") || f.getName().equals("ROW_ID") || f.getName().equals("DATA_INSERIMENTO") || f.getName().equals("STATUS")
-					|| f.getName().equals("ANNO"))
+			if (f.getName().equals("REMOTE_FILE_NAME") || f.getName().equals("LOCAL_FILE_NAME") || f.getName().equals("ROW_ID") || f.getName().equals("DATA_INSERIMENTO")
+					|| f.getName().equals("STATUS") || f.getName().equals("ANNO"))
 				continue;
 			if (contains_SERVIZIO_SEGNALAZIONE) {
 				if (f.getName().equals("SERVIZIO_SEGNALAZIONE")) {
@@ -903,26 +912,32 @@ public class TableModel {
 
 		sql += String.format("   PROCEDURE DTO_FTNSR001_%s_ON_RECEIVED    (aREMOTE_FILE_NAME IN VARCHAR2)" + Util.newLine, t.getDTOName());
 		sql += String.format("    IS" + Util.newLine);
-		sql += String.format("    v_pkg_proc VARCHAR2(32767) default $$PLSQL_UNIT || '.' || UTL_CALL_STACK.SUBPROGRAM(1)(2);"+ Util.newLine);
+		sql += String.format("    v_pkg_proc VARCHAR2(32767) default $$PLSQL_UNIT || '.' || UTL_CALL_STACK.SUBPROGRAM(1)(2);" + Util.newLine);
 		sql += String.format("    -- La procedura viene eseguita al termine dell'importazione dalla DTO del flusso" + Util.newLine);
 		sql += String.format("    BEGIN" + Util.newLine);
 		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Ricezione del flusso %s... --> ' || aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
 		sql += String.format("        DBMS_OUTPUT.PUT_LINE('Received from DTO File Name :' || aREMOTE_FILE_NAME);" + Util.newLine);
-		sql += String
-				.format("        -- Cancello tutti i record ricevuti in precedenza a fronte dello stesso ABI_BANCA,DATA_RIFERIMENTO ma con aREMOTE_FILE_NAME DIVERSO da quello che ho appena ricevuto." + Util.newLine);
+		sql += String.format(
+				"        -- Cancello tutti i record ricevuti in precedenza a fronte dello stesso ABI_BANCA,DATA_RIFERIMENTO ma con aREMOTE_FILE_NAME DIVERSO da quello che ho appena ricevuto."
+						+ Util.newLine);
 		sql += String.format("        DELETE FROM S2A.DTO_FTNSR001_%s" + Util.newLine, t.getDTOName());
 		sql += String.format("            WHERE     (ABI_BANCA,DATA_RIFERIMENTO) IN" + Util.newLine);
-		sql += String.format("                      (SELECT ABI_BANCA,DATA_RIFERIMENTO FROM S2A.DTO_FTNSR001_%s WHERE REMOTE_FILE_NAME=aREMOTE_FILE_NAME )" + Util.newLine, t.getDTOName());
+		sql += String.format("                      (SELECT ABI_BANCA,DATA_RIFERIMENTO FROM S2A.DTO_FTNSR001_%s WHERE REMOTE_FILE_NAME=aREMOTE_FILE_NAME )" + Util.newLine,
+				t.getDTOName());
 		sql += String.format("            AND REMOTE_FILE_NAME <> aREMOTE_FILE_NAME;" + Util.newLine);
 		sql += String.format("" + Util.newLine);
 		sql += String.format("        -- Aggiornamento SERVIZIO, RAPPORTO a partire da SERVIZIO_SEGNALAZIONE, RAPPORTO_SEGNALAZIONE. SOLO se serve !!!!" + Util.newLine);
-		sql += String.format("        -- UPDATE_SERVIZIO_RAPPORTO('DTO_FTNSR001_%s', aREMOTE_FILE_NAME);  --- Se serve aggiornare il servizio !!! " + Util.newLine + Util.newLine, t.getDTOName());
+		sql += String.format("        -- UPDATE_SERVIZIO_RAPPORTO('DTO_FTNSR001_%s', aREMOTE_FILE_NAME);  --- Se serve aggiornare il servizio !!! " + Util.newLine + Util.newLine,
+				t.getDTOName());
 
 		sql += String.format("        -- Aggiorno lo status per rendere visibili i record nella vista" + Util.newLine);
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s... --> ' || aREMOTE_FILE_NAME);" + Util.newLine, t.getDTOName());
-		sql += String.format("        UPDATE S2A.DTO_FTNSR001_%s SET STATUS='PUBLISHED' WHERE STATUS='RECEIVED' AND REMOTE_FILE_NAME=aREMOTE_FILE_NAME;" + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s... --> ' || aREMOTE_FILE_NAME);" + Util.newLine,
+				t.getDTOName());
+		sql += String.format("        UPDATE S2A.DTO_FTNSR001_%s SET STATUS='PUBLISHED' WHERE STATUS='RECEIVED' AND REMOTE_FILE_NAME=aREMOTE_FILE_NAME;" + Util.newLine,
+				t.getDTOName());
 		sql += String.format("        COMMIT;" + Util.newLine);
-		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s OK --> ' || aREMOTE_FILE_NAME);" + Util.newLine + Util.newLine, t.getDTOName());
+		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Aggiornamento dello stato a PUBLISHED per il flusso %s OK --> ' || aREMOTE_FILE_NAME);" + Util.newLine
+				+ Util.newLine, t.getDTOName());
 
 		sql += String.format("        S2A.LOG_MANAGER.LOG_INFO (v_pkg_proc,'Ricezione del flusso %s OK --> ' || aREMOTE_FILE_NAME) ;" + Util.newLine, t.getDTOName());
 		sql += String.format("        EXCEPTION WHEN OTHERS THEN" + Util.newLine);
