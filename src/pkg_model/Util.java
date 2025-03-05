@@ -77,6 +77,10 @@ public class Util {
 		
 		sql += "-- DATAMARTGOV_AP : Utente per DATAMARTGOV_AP \n";
 		sql += String.format("GRANT SELECT ON S2A.%s TO DATAMARTGOV_AP;" + newLine, name);			
+
+		sql += String.format("GRANT SELECT ON S2A.%s TO DATAINT;" + newLine, name);			
+		sql += String.format("GRANT SELECT ON S2A.%s TO SVDATAINT;" + newLine, name);			
+		sql += String.format("GRANT SELECT ON S2A.%s TO SVDATAINT_AP;" + newLine, name);				 
 		
 		return sql;
 	}
